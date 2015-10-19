@@ -1,0 +1,119 @@
+<head>
+  <title>project-deployer</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          Project deployer
+        </a>
+      </div>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <header>
+      
+    </header>
+    
+    <div class="row">
+      <div class="col-sm-6">
+        <h2>Register or edit a project</h2>
+        {{> projectForm}}
+      </div>
+      <div class="col-sm-6">
+        <h2>Your projects</h2>
+        <ul>
+          {{#each projects}}
+            {{> project}}
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+
+<template name="projectForm">
+  <form class="new-project form-horizontal">
+    <input type="hidden" name="id" value="{{project._id}}" />
+    
+    <div class="form-group">
+      <label for="label" class="col-sm-2 control-label">
+        <i class="fa fa-fw fa-tag fa-2x" title="Label"></i>
+      </label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="label" placeholder="Label" value="{{project.label}}" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="git_url" class="col-sm-2 control-label">
+        <i class="fa fa-fw fa-github fa-2x" title="Git URL"></i>
+      </label>
+      <div class="col-sm-10">
+        <input type="url" class="form-control" name="git_url" placeholder="Git URL" value="{{project.git_url}}" required/>
+      </div>
+    </div>
+    <div class="form-group">
+        <label for="public_url" class="col-sm-2 control-label">
+          <i class="fa fa-fw fa-external-link fa-2x" title="Public URL"></i>
+        </label>
+      <div class="col-sm-10">
+        <input type="url" class="form-control" name="public_url" placeholder="Public URL" value="{{project.public_url}}" required/>
+      </div>
+    </div>
+    <div class="form-group">
+        <label for="commands" class="col-sm-2 control-label">
+          <i class="fa fa-fw fa-terminal fa-2x" title="Commands"></i>
+        </label>
+      <div class="col-sm-10">
+        <textarea class="form-control" cols="25" rows="5" placeholder="Commands" value="{{project.commands}}" name="commands"></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary">
+          <i class="fa fa-fw fa-floppy-o"></i>
+        </button>
+        <a href="#" class="btn btn-default cancel">
+          <i class="fa fa-fw fa-ban"></i>
+        </a>
+        <a href="#" class="btn btn-danger trash {{editionMode}}">
+          <i class="fa fa-fw fa-trash"></i>
+        </a>
+      </div>
+    </div>
+    {{#with project}}
+    <div class="form-group">
+      <label class="col-sm-2 control-label">
+        <i class="fa fa-fw fa-cog fa-2x" title="Link to provide to CI (Travis)"></i>
+      </label>
+      <div class="col-sm-10">
+        <div class="input-group">
+          <input type="text" class="form-control" disabled value="{{deployLink}}"/>
+          <div class="input-group-addon">
+            <i class="fa fa-fw fa-clipboard copy"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/with}}
+  </form>
+</template>
+
+
+<template name="project">
+  <li>
+    {{label}} 
+    <a href="{{public_url}}" target="_blank" title="Go to the deployed project">
+      <i class="fa fa-fw fa-external-link"></i>
+    </a>
+    <a href="{{git_url}}" target="_blank" title="Go to the Github repository">
+      <i class="fa fa-fw fa-github"></i>
+    </a>
+    <a href="#" class="edit" title="Edit the project">
+      <i class="fa fa-fw fa-pencil"></i>
+    </a>
+  </li>
+</template>
+

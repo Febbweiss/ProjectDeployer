@@ -3,16 +3,21 @@ Projects = new Mongo.Collection('projects');
 if (Meteor.isClient) {
   Meteor.subscribe('projects');
 
-  Template.body.helpers({
+  Template.management.helpers({
     projects: function () {
       return Projects.find({}, {sort: {label: 1}});
     }
   });
 
+  Template.projectForm.onRendered(function() {
+     new Clipboard('.btn.clipboard');
+  });
+  
   Template.projectForm.events({
     'submit .new-project': function (event) {
         event.preventDefault();
         var form = event.target;
+        console.log('handled', form.id.value);
         if( form.id.value ) {
           Meteor.call('editProject',form.id.value, form.label.value, form.git_url.value, form.public_url.value, form.commands.value);
           form.id.value = '';
@@ -51,7 +56,7 @@ if (Meteor.isClient) {
     },
     
     deployLink: function() {
-      return Meteor.absoluteUrl('/deploy?token=XXXX&project_id=' + Session.get('projectToEdit')._id);
+      return Meteor.absoluteUrl('deploy?token=XXXX&project_id=' + Session.get('projectToEdit')._id);
     }
   });
   
@@ -82,15 +87,17 @@ Meteor.methods({
   },
   
   addProject: function(label, git_url, public_url ,commands) {
+    console.log('addProjects', arguments);
     Projects.insert({
       label: label,
       git_url: git_url,
       public_url: public_url,
       commands: commands
-    })
+    });
   },
   
   editProject: function(id, label, git_url, public_url ,commands) {
+    console.log('editProjects', arguments);
     Projects.update(
       id, 
       { $set: { 

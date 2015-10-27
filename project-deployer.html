@@ -2,37 +2,57 @@
   <title>project-deployer</title>
 </head>
 
-<body>
+<template name="layout">
+  {{> nav}}
+  <div class="container-fluid">
+    {{> yield }}
+  </div>
+</template>
+
+<template name="nav">
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="#">
-          Project deployer
-        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Project deployer</a>
       </div>
-    </div>
-  </nav>
-  <div class="container-fluid">
-    <header>
       
-    </header>
-    
-    <div class="row">
-      <div class="col-sm-6">
-        <h2>Register or edit a project</h2>
-        {{> projectForm}}
-      </div>
-      <div class="col-sm-6">
-        <h2>Your projects</h2>
-        <ul>
-          {{#each projects}}
-            {{> project}}
-          {{/each}}
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="active">
+            <a href="/management">Projects <span class="sr-only">(current)</span></a>
+          </li>
         </ul>
       </div>
     </div>
+  </nav>
+</template>
+
+<template name="home">
+  <h1>Welcome to Project deployer</h1>
+</template>
+
+<template name="management">
+  <div class="row">
+    <div class="col-sm-6">
+      <h2>Register or edit a project</h2>
+      {{> projectForm}}
+    </div>
+    <div class="col-sm-6">
+      <h2>Your projects</h2>
+      <ul>
+        {{#each projects}}
+          {{> project}}
+        {{/each}}
+      </ul>
+    </div>
   </div>
-</body>
+</template>
 
 <template name="projectForm">
   <form class="new-project form-horizontal">
@@ -84,16 +104,18 @@
       </div>
     </div>
     {{#with project}}
-    <div class="form-group">
+    <div class="form-group ">
       <label class="col-sm-2 control-label">
         <i class="fa fa-fw fa-cog fa-2x" title="Link to provide to CI (Travis)"></i>
       </label>
       <div class="col-sm-10">
         <div class="input-group">
-          <input type="text" class="form-control" disabled value="{{deployLink}}"/>
-          <div class="input-group-addon">
-            <i class="fa fa-fw fa-clipboard copy"></i>
-          </div>
+          <input type="text" id="deployLink" class="form-control" readonly="readonly" title="{{deployLink}}" value="{{deployLink}}"/>
+          <span class="input-group-btn">
+            <a class="btn btn-default clipboard" data-clipboard-target="#deployLink">
+              <i class="fa fa-fw fa-clipboard copy"></i>
+            </a>
+          </span>
         </div>
       </div>
     </div>

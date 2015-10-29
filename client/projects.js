@@ -1,44 +1,3 @@
-Projects = new Mongo.Collection('projects');
-
-ProjectService = {
-  insert: function(label, git_url, public_url, commands, callback) {
-    Projects.insert({
-      label: label,
-      git_url: git_url,
-      public_url: public_url,
-      commands: commands
-    }, callback);
-  },
-  
-  update: function(id, label, git_url, public_url ,commands) {
-    Projects.update(
-      id, 
-      { $set: { 
-        label: label,
-        git_url: git_url,
-        public_url: public_url,
-        commands: commands
-        } 
-      }
-    );
-  },
-  
-  delete: function(id) {
-    Projects.remove(id);
-  },
-  
-  get: function(id) {
-    return Projects.findOne({_id: id});
-  },
-  
-  list: function() {
-    return Projects.find({}, {sort: {label: 1}});
-  }
-};
-
-if (Meteor.isClient) {
-  Meteor.subscribe('projects');
-
   Template.management.helpers({
     projects: function () {
       return ProjectService.list();
@@ -103,33 +62,3 @@ if (Meteor.isClient) {
       });
     },
   });
-  
-}
-
-if (Meteor.isServer) {
-  Meteor.publish('projects', function() {
-      return Projects.find({});
-  });
-}
-
-Meteor.methods({
-  listProjects: function() {
-    return ProjectService.list();
-  },
-  
-  getProject: function(id) {
-    return ProjectService.get(id);
-  },
-  
-  addProject: function(label, git_url, public_url ,commands) {
-    ProjectService.insert(label, git_url, public_url ,commands);
-  },
-  
-  editProject: function(id, label, git_url, public_url ,commands) {
-    ProjectService.update(id, label, git_url, public_url ,commands);
-  },
-  
-  deleteProject: function(id) {
-    ProjectService.delete(id);
-  }
-});

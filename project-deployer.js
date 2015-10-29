@@ -1,11 +1,47 @@
 Projects = new Mongo.Collection('projects');
 
+ProjectService = {
+  insert: function(label, git_url, public_url, commands, callback) {
+    Projects.insert({
+      label: label,
+      git_url: git_url,
+      public_url: public_url,
+      commands: commands
+    }, callback);
+  },
+  
+  update: function(id, label, git_url, public_url ,commands) {
+    Projects.update(
+      id, 
+      { $set: { 
+        label: label,
+        git_url: git_url,
+        public_url: public_url,
+        commands: commands
+        } 
+      }
+    );
+  },
+  
+  delete: function(id) {
+    Projects.remove(id);
+  },
+  
+  get: function(id) {
+    return Projects.findOne({_id: id});
+  },
+  
+  list: function() {
+    return Projects.find({}, {sort: {label: 1}});
+  }
+};
+
 if (Meteor.isClient) {
   Meteor.subscribe('projects');
 
   Template.management.helpers({
     projects: function () {
-      return Projects.find({}, {sort: {label: 1}});
+      return ProjectService.list();
     }
   });
 
@@ -17,7 +53,6 @@ if (Meteor.isClient) {
     'submit .new-project': function (event) {
         event.preventDefault();
         var form = event.target;
-        console.log('handled', form.id.value);
         if( form.id.value ) {
           Meteor.call('editProject',form.id.value, form.label.value, form.git_url.value, form.public_url.value, form.commands.value);
           form.id.value = '';
@@ -79,38 +114,22 @@ if (Meteor.isServer) {
 
 Meteor.methods({
   listProjects: function() {
-    return Projects.find({}, {sort: {label: 1}});
+    return ProjectService.list();
   },
   
   getProject: function(id) {
-    return Projects.findOne({_id: id});
+    return ProjectService.get(id);
   },
   
   addProject: function(label, git_url, public_url ,commands) {
-    console.log('addProjects', arguments);
-    Projects.insert({
-      label: label,
-      git_url: git_url,
-      public_url: public_url,
-      commands: commands
-    });
+    ProjectService.insert(label, git_url, public_url ,commands);
   },
   
   editProject: function(id, label, git_url, public_url ,commands) {
-    console.log('editProjects', arguments);
-    Projects.update(
-      id, 
-      { $set: { 
-        label: label,
-        git_url: git_url,
-        public_url: public_url,
-        commands: commands
-        } 
-      }
-    );
+    ProjectService.update(id, label, git_url, public_url ,commands);
   },
   
   deleteProject: function(id) {
-    Projects.remove(id);
+    ProjectService.delete(id);
   }
 });

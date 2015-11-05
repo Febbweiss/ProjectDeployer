@@ -21,3 +21,4 @@ twbs:bootstrap-noglyph
 fortawesome:fontawesome
 iron:router
 zenorocha:clipboard
+simple:reactive-method

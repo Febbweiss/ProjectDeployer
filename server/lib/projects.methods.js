@@ -8,7 +8,13 @@ Meteor.methods({
   },
   
   addProject: function(label, git_url, public_url ,commands) {
-    ProjectService.insert(label, git_url, public_url ,commands);
+    return ProjectService.insert(label, git_url, public_url ,commands, function(errors, id) {
+      if( id ) {
+        /*DeploymentService.deploy(ProjectService.get(id), function(errors, deploymentId) {
+          
+        });*/
+      }
+    });
   },
   
   editProject: function(id, label, git_url, public_url ,commands) {

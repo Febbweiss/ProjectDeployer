@@ -1,7 +1,3 @@
-Template.management.onCreated(function(){
-  Meteor.subscribe('projects');
-});
-
 Template.management.helpers({
   projects: function () {
     return ProjectService.list();

@@ -1,4 +1,4 @@
-Template.management.helpers({
+Template.projects.helpers({
   projects: function () {
     return ProjectService.list();
   }
@@ -13,10 +13,7 @@ Template.projectForm.events({
       event.preventDefault();
       var form = event.target;
       if( form.id.value ) {
-        Meteor.call('editProject',form.id.value, form.label.value, form.git_url.value, form.public_url.value, form.commands.value, function(errors, result) {
-          console.log(errors);
-          console.log(result);
-        });
+        Meteor.call('editProject',form.id.value, form.label.value, form.git_url.value, form.public_url.value, form.commands.value);
         form.id.value = '';
       } else {
         Meteor.call('addProject', form.label.value, form.git_url.value, form.public_url.value, form.commands.value);

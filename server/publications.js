@@ -3,5 +3,9 @@ Meteor.publish('projects', function() {
 });
 
 Meteor.publish('deployment', function(id) {
-    return DeploymentService.get(id);
+  return DeploymentService.get(id);
+});
+
+Meteor.publish('deployments', function(project_id) {
+  return DeploymentService.list(project_id);
 });

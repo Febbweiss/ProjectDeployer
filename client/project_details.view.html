@@ -1,0 +1,55 @@
+<template name="projectDetails">
+    <ol class="breadcrumb">
+      <li><a href="/projects">Projects</a></li>
+      <li class="active">{{label}}</li>
+    </ol>
+    
+    <h1>
+        {{label}}
+        <a href="{{git_url}}" target="_blank">
+            <i class="fa fa-fw fa-github" title="Go to GIT repository"></i>
+        </a>
+    </h1>
+   {{> deploymentsList}}
+</template>
+
+<template name="deploymentsList">
+    <div>
+        <ul class="nav nav-tabs" role="tablist">
+            {{#each deployments}}
+                {{> deploymentBtn}}
+            {{/each}}
+        </ul>
+        <div class="tab-content">
+            {{#each deployments}}
+                {{> deploymentDetails}}
+            {{/each}}
+        </div>
+    </div>
+</template>
+
+<template name="deploymentBtn">
+    <li role="presentation">
+        <a id="heading{{index}}" role="tab" data-toggle="tab" href="#collapseDeployment{{index}}" aria-controls="collapseDeployment{{index}}">
+            # {{index}}
+            <i class="fa fa-cog fa-spin {{running}}"></i>
+        </a>
+    </li>
+</template>
+
+<template name="deploymentDetails">
+    <div role="tabpanel" class="tab-pane" id="collapseDeployment{{index}}">
+        <div class="well">
+            <h4>Deployment # {{index}} - {{tm_cal timestamp}}</h4>
+            {{#each output}}
+                <p>
+                    <samp>{{{format}}}</samp>
+                </p>
+            {{/each}}
+            
+            <div class="pull-right">
+                <h5>Status : <small>{{running}}</small></h5>
+            </div>
+        </div>
+    </div>
+</template>

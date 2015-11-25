@@ -1,4 +1,8 @@
-<template name="management">
+<template name="projects">
+  <ol class="breadcrumb">
+      <li class="active">Projects</li>
+    </ol>
+    
   <div class="row">
     <div class="col-sm-6">
       <h2>Register or edit a project</h2>
@@ -96,6 +100,9 @@
     </a>
     <a href="#" class="edit" title="Edit the project">
       <i class="fa fa-fw fa-pencil"></i>
+    </a>
+    <a href="/project/{{_id}}" title="View project">
+      <i class="fa fa-fw fa-eye"></i>
     </a>
   </li>
 </template>

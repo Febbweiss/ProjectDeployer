@@ -10,7 +10,7 @@ ProjectService = {
     }, callback);
   },
   
-  update: function(id, label, git_url, public_url ,commands) {
+  update: function(id, label, git_url, public_url ,commands, callback) {
     Projects.update(
       id, 
       { $set: { 
@@ -19,12 +19,13 @@ ProjectService = {
         public_url: public_url,
         commands: commands
         } 
-      }
+      },
+      callback
     );
   },
   
-  delete: function(id) {
-    Projects.remove(id);
+  delete: function(id, callback) {
+    Projects.remove(id, callback);
   },
   
   get: function(id) {

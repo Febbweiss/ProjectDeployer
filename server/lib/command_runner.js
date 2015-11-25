@@ -5,14 +5,16 @@ var exec = Npm.require('child_process').exec,
         exec(cmd, 
             options, 
             Meteor.bindEnvironment(
-                function(error, stdout, stderr) {
+                function(errors, stdout, stderr) {
                     if( stdout !== '' ) {
                         stdoutHandler(stdout);
                     }
                     if( stderr != '' ) {
                         stderrHandler(stderr);
+                    } else if( errors ) {
+                        stderrHandler('Internal error');
                     }
-                    callback();
+                    callback(errors);
                 }
             )
         );
@@ -40,7 +42,15 @@ CommandRunner = {
             
         options.cwd = replace(options.cwd, customs);
         
-        execSync(command, options, bundle.stdout, bundle.stderr, function() {
+        execSync(command, options, bundle.stdout, bundle.stderr, function(errors) {
+            if( errors ) {
+                if( callback ) {
+                    return callback();
+                } else {
+                    return;
+                }
+            }
+            
             bundle.counter++;
             if( bundle.counter >= bundle.script.length ) {
                 if( bundle.deploy_script && bundle.project.commands ) {
@@ -49,11 +59,7 @@ CommandRunner = {
                     bundle.counter = 0;
                     CommandRunner.commands(bundle, callback);
                 } else if( callback ) {
-                    if( bundle.deployment ) {
-                        DeploymentService.update_status(bundle.deployment._id, 'closed', callback);
-                    } else {
-                        callback();
-                    }
+                    callback();
                 }
             } else {
                 CommandRunner.run(bundle, callback);
@@ -68,14 +74,18 @@ CommandRunner = {
                 cwd: replace('%ROOT_CWD%/%CWD%', customs)
             };
             
-        execSync(command, options, bundle.stdout, bundle.stderr, function() {
+        execSync(command, options, bundle.stdout, bundle.stderr, function(errors) {
+            if( errors ) {
+                if( callback ) {
+                    return callback();
+                } else {
+                    return;
+                }
+            }
+            
             bundle.counter++;
             if( bundle.counter >= bundle.script.length ) {
-                if( bundle.deployment ) {
-                    DeploymentService.update_status(bundle.deployment._id, 'closed', callback);
-                } else {
-                    callback();
-                }
+                callback();
             } else {
                 CommandRunner.commands(bundle, callback);
             }

@@ -17,8 +17,9 @@ Job.processJobs('projectDeployerJobQueue', 'create_repository',
           }
         },
         function() {
+            DeploymentService.update_status(deployment._id, 'closed', callback);
             if( callback ) {
-                callback();
+               callback();
             }   
         }
       );
@@ -61,8 +62,9 @@ Job.processJobs('projectDeployerJobQueue', 'update_repository',
           }
         },
         function() {
+            DeploymentService.update_status(deployment._id, 'closed', callback);
             if( callback ) {
-                callback();
+              callback();
             }   
         }
       );    

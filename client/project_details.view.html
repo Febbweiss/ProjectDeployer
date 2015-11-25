@@ -39,10 +39,10 @@
 
 <template name="deploymentDetails">
     <div role="tabpanel" class="tab-pane" id="collapseDeployment{{index}}">
-        <div class="well">
+        <div class="well well-sm {{deployment_status}}">
             <h4>Deployment # {{index}} - {{tm_cal timestamp}}</h4>
             {{#each output}}
-                <p>
+                <p class="{{error}}">
                     <samp>{{{format}}}</samp>
                 </p>
             {{/each}}

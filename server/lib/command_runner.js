@@ -33,7 +33,7 @@ var exec = Npm.require('child_process').exec,
     
 CommandRunner = {
     run: function( data, callback = undefined) {
-        var bundle = _.extend({deployment: {}, project:{}, stdout: console.log, stderr: console.error, counter: 0, deploy_script: true}, data),
+        var bundle = _.extend({deployment: {}, project:{}, stdout: console.log, stderr: console.error, counter: 0, step: 0}, data),
             customs = {'%CWD%': bundle.project._id, '%GIT%': bundle.project.git_url};
             
         var line = bundle.script[bundle.counter],
@@ -50,14 +50,18 @@ CommandRunner = {
                     return;
                 }
             }
-            
+
             bundle.counter++;
             if( bundle.counter >= bundle.script.length ) {
-                if( bundle.deploy_script && bundle.project.commands ) {
-                    bundle.deploy_script = false;
-                    bundle.script = bundle.project.commands.split('\n');
+                if( bundle.step < 1 ) {
+                    bundle.step++;
                     bundle.counter = 0;
-                    CommandRunner.commands(bundle, callback);
+                    if( bundle.project.commands ) {
+                        bundle.script = bundle.project.commands.split('\n');
+                        CommandRunner.commands(bundle, callback);
+                    } else if( callback ) {
+                            callback();
+                        }
                 } else if( callback ) {
                     callback();
                 }
@@ -85,9 +89,37 @@ CommandRunner = {
             
             bundle.counter++;
             if( bundle.counter >= bundle.script.length ) {
-                callback();
+                if( bundle.project.run ) {
+                    bundle.script = [bundle.project.run];
+                    bundle.counter = 0;
+                    CommandRunner.launch(bundle, callback);
+                } else {
+                    callback();
+                }
             } else {
                 CommandRunner.commands(bundle, callback);
+            }
+        });
+    },
+    
+    launch: function(bundle, callback = undefined) {
+        var command = bundle.script[bundle.counter], 
+            customs = {'%CWD%': bundle.project._id},
+            options = {
+                cwd: replace('%ROOT_CWD%/%CWD%', customs),
+                env: {}
+            },
+            variables = bundle.project.variables;
+        
+        for( var index in variables ) {
+            options.env[variables[index].name] = variables[index].value;
+        }
+        
+        execSync(command, options, bundle.stdout, bundle.stderr, function(errors) {
+            if( callback ) {
+                return callback();
+            } else {
+                return;
             }
         });
     }

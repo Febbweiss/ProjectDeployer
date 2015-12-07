@@ -1,23 +1,27 @@
 Projects = new Mongo.Collection('projects');
 
 ProjectService = {
-  insert: function(label, git_url, public_url, commands, callback) {
+  insert: function(label, git_url, public_url, commands, run, variables, callback) {
     Projects.insert({
       label: label,
       git_url: git_url,
       public_url: public_url,
-      commands: commands
+      run: run,
+      commands: commands,
+      variables: variables
     }, callback);
   },
   
-  update: function(id, label, git_url, public_url ,commands, callback) {
+  update: function(id, label, git_url, public_url ,commands, run, variables, callback) {
     Projects.update(
       id, 
       { $set: { 
         label: label,
         git_url: git_url,
         public_url: public_url,
-        commands: commands
+        commands: commands,
+        run: run,
+        variables: variables
         } 
       },
       callback

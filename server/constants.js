@@ -1,5 +1,11 @@
 DEPLOYMENT_FOLDER = '/home/ubuntu/deployment';
 
+STEPS = [
+    'CREATION',
+    'COMMANDS',
+    'RUN'
+];
+
 SCRIPTS = {
         CREATE : [
             {

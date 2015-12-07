@@ -59,9 +59,11 @@ CommandRunner = {
                     if( bundle.project.commands ) {
                         bundle.script = bundle.project.commands.split('\n');
                         CommandRunner.commands(bundle, callback);
+                    } else if( bundle.project.run ) {
+                        CommandRunner.launch(bundle, callback);
                     } else if( callback ) {
-                            callback();
-                        }
+                        callback();
+                    }
                 } else if( callback ) {
                     callback();
                 }
@@ -90,8 +92,6 @@ CommandRunner = {
             bundle.counter++;
             if( bundle.counter >= bundle.script.length ) {
                 if( bundle.project.run ) {
-                    bundle.script = [bundle.project.run];
-                    bundle.counter = 0;
                     CommandRunner.launch(bundle, callback);
                 } else {
                     callback();
@@ -103,7 +103,7 @@ CommandRunner = {
     },
     
     launch: function(bundle, callback = undefined) {
-        var command = bundle.script[bundle.counter], 
+        var command = bundle.project.run, 
             customs = {'%CWD%': bundle.project._id},
             options = {
                 cwd: replace('%ROOT_CWD%/%CWD%', customs),
